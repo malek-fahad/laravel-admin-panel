@@ -1,29 +1,41 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
+@extends('layouts.masterlayout')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
+@section('title')Profile @endsection
+
+@section('breadcrumb')
+    <li class="breadcrumb-item active">Profile</li>
+@endsection
+
+@section('content')
+    <div class="row">
+        <!-- Column -->
+        <div class="col-lg-6 d-flex flex-column">
+            <div class="card" style="flex: 1 1 auto;">
+                <div class="card-body">
                     @include('profile.partials.update-profile-information-form')
                 </div>
             </div>
-
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
+        </div>
+        <div class="col-lg-6 d-flex flex-column">
+            <div class="card" style="flex: 1 1 auto;">
+                <div class="card-body">
                     @include('profile.partials.update-password-form')
                 </div>
             </div>
-
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
+        </div>
+    </div>
+    <div class="row">
+        <!-- Column -->
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
                     @include('profile.partials.delete-user-form')
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection
+
+@section('footerJs')
+   
+@endsection

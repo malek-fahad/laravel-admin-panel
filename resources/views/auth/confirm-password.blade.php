@@ -1,27 +1,52 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
+@extends('layouts.masterlayout')
+
+@section('title')Profile @endsection
+
+@section('breadcrumb')
+    <li class="breadcrumb-item active">Profile</li>
+@endsection
+
+@section('content')
+    <div class="row justify-content-center">
+        <!-- Column -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-subtitle">{{ __('This is a secure area of the application. Please confirm your password before continuing.') }}</h6>
+                    
+                    <form method="POST" action="{{ route('password.confirm') }}" class="m-t-40">
+                        @csrf
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="password">{{ __('Password') }}</label>
+                                    <div class="controls">
+                                        <input id="password" name="password" type="password" class="form-control" required autocomplete="current-password" placeholder="{{ __('Password') }}">
+                                        
+                                        @if ($errors->has('password'))
+                                            <div class="help-block text-danger">
+                                                @foreach ($errors->get('password') as $error)
+                                                    <div>{{ $error }}</div>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <button class="btn btn-primary" type="submit">{{ __('Confirm') }}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
+@endsection
 
-    <form method="POST" action="{{ route('password.confirm') }}">
-        @csrf
+@section('footerJs')
+   
+@endsection
 
-        <!-- Password -->
-        <div>
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <div class="flex justify-end mt-4">
-            <x-primary-button>
-                {{ __('Confirm') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
