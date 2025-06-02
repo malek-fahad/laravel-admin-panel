@@ -174,7 +174,7 @@
                                     </li>
                                     <li role="separator" class="divider"></li>
                                     <li><a href="{{route('profile.edit')}}"><i class="ti-user"></i> My Profile</a></li>
-                                    <li><a href="index.html#"><i class="mdi mdi-account-multiple"></i> All Users</a></li>
+                                    <li><a href="{{route('users.all')}}"><i class="mdi mdi-account-multiple"></i> All Users</a></li>
                                     <li><a href="index.html#"><i class="ti-email"></i> Inbox</a></li>
                                     <li role="separator" class="divider"></li>
                                     <li><a href="index.html#"><i class="ti-settings"></i> Account Setting</a></li>

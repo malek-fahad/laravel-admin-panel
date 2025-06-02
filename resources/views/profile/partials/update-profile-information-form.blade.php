@@ -74,6 +74,14 @@
                 @endif
             </div>
             <div class="form-group">
+                <label for="exampleInputuname2">{{__('Role')}}</label>
+                <div class="controls">
+                    <div class="input-group">
+                        <input id="email" type="email" disabled  class="form-control" value="{{old('role', $user->role->name)}}" required autofocus autocomplete="username" placeholder="Email">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-info" type="submit">{{ __('Save') }}</button>
                 @if (session('status') === 'profile-updated')
                     <p class="text-success pt-1">{{ __('Saved.') }}</p>
