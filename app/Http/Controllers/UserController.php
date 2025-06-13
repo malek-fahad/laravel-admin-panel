@@ -69,8 +69,15 @@ class UserController extends Controller
         }
     }
 
-    public function edit(Request $request, $id): View {
-
+    public function edit(Request $request, $id): View|RedirectResponse {
+        if($id==1){
+            if(Auth::user()->id!=1){
+                return redirect()->route('users.all')->with('error', "You can't edit primary user.");
+            }
+        }
+        if(Auth::user()->role_id!=1){
+            return redirect()->route('users.all')->with('error', "You don't have permission to edit user.");
+        }
         $user = User::with('role')->findOrFail($id);
         $roles = Role::all();
 
@@ -88,6 +95,37 @@ class UserController extends Controller
         $user->save();
 
         return redirect()->route('users.all')->with('success', 'User updated successfully.');
+    }
+
+    public function destroy($id) {
+        if($id == Auth::user()->id){
+            return response()->json([
+                'success' => false,
+                'message' => "You can't delete your self from here.",
+            ]);
+        }
+
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'user not found.',
+            ]);
+        }
+
+        // Delete the image file if it exists
+        if ($user->image && file_exists(public_path('storage/' . $user->image))) {
+            @unlink(public_path('storage/' . $user->image));
+        }
+
+        // Delete the user
+        $user->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User deleted successfully.',
+        ]);
     }
     
 

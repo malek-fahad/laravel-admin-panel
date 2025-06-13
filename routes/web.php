@@ -1,8 +1,10 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;
+use App\Http\Middleware\IsSuperAdmin;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Middleware\ProtectPrimaryAdmin;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -24,20 +26,24 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     
-     Route::prefix('users')->name('users.')->group(function () {
+    Route::prefix('users')->name('users.')->group(function () {
         Route::get('/', [UserController::class, 'view'])->name('all');
-        Route::get('/add', [UserController::class, 'add'])->name('add');
-        
-        Route::post('/store', [UserController::class, 'store'])->name('store');
-        Route::get('/{id}', [UserController::class, 'show'])->name('show');
-
-        Route::get('/{id}/update', [UserController::class, 'edit'])->name('edit');
-
-        Route::patch('/{user}', [UserController::class, 'update'])->name('update');
 
 
+        Route::middleware([IsSuperAdmin::class])->group(function () {
 
+            Route::get('/add', [UserController::class, 'add'])->name('add');
+            Route::post('/store', [UserController::class, 'store'])->name('store');
+            Route::get('/{id}', [UserController::class, 'show'])->name('show');
 
+            // 🛡 Protected routes for primary admin
+            Route::middleware([ProtectPrimaryAdmin::class])->group(function () {
+                Route::get('/{id}/update', [UserController::class, 'edit'])->name('edit');
+                Route::patch('/{user}', [UserController::class, 'update'])->name('update');
+                Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');
+            });
+
+        });
     });
 });
 

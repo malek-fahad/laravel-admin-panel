@@ -5,7 +5,7 @@
     @csrf
 </form> --}}
 
-<form method="post" action="{{ route('profile.update') }}" class="m-t-40 space-y-6">
+<form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="m-t-40 space-y-6">
     @csrf
     @method('patch')
 
@@ -78,6 +78,18 @@
                 <div class="controls">
                     <div class="input-group">
                         <input id="role" type="text" disabled  class="form-control" value="{{old('role', $user->role->name)}}" required autofocus autocomplete="username" placeholder="Email">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <h5>Profile Image<span class="text-danger">*</span><small> (image size max 1MB. Supported extensions jpg, .png or .jpeg)</small></h5>
+                    <input name="profile_picture" type="file" id="input-file-max-fs" class="dropify" data-max-file-size="1M" accept=".jpg,.png,.jpeg"/>
+                </div>
+                <div class="form-group col-md-12">
+                    <h5>Previous Image<span class="text-danger">*</span></h5>
+                    <div class="form-control w-100 d-flex justify-content-center align-items-center text-info p-3" style="min-height: 88%; font-size: 48px;">
+                        <img style="max-height: 100px" src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : asset('assets/images/basic/no_profile_picture.png') }}" alt="">
                     </div>
                 </div>
             </div>

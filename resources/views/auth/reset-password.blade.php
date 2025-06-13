@@ -37,7 +37,8 @@
                         
                         <div class="form-group ">
                             <div class="col-xs-12">
-                                <input class="form-control" id="email" type="email" name="email" value="{{ old('email', $request->email) }}" required autofocus autocomplete="username" placeholder="Email">
+                                <input class="form-control" id="email" type="hidden" name="email" value="{{ old('email', $request->email) }}" required autofocus autocomplete="username" placeholder="Email">
+                                <input class="form-control" id="email" type="email" disabled value="{{ old('email', $request->email) }}" required autofocus autocomplete="username" placeholder="Email">
                             </div>
                         </div>
                         <div class="form-group ">

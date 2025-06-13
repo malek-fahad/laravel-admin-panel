@@ -72,24 +72,47 @@
                                             <td class="text-center" title="{{ $user->created_at->format('F j, Y g:i A') }}">{{ $user->created_at->format('F j, Y') }}</td>
 
                                             <td class="text-nowrap text-center py-0" style="line-height: 48px;">
-                                                <button class="btn btn-info view-user" data-id="{{ $user->id }}" title="View user">
+                                                {{-- View Button --}}
+                                                <button class="btn btn-info view-user" data-id="{{ $user->id }}" title="View User">
                                                     <i class="far fa-eye"></i>
                                                 </button>
-                                                @if ($user->id!=1)
-                                                    <a href="{{ route('users.edit', $user->id) }}" title="Edit user" class="btn btn-warning">
-                                                        <i class="far fa-edit"></i>
-                                                    </a>
-                                                    <button class="btn btn-danger delete-user" data-id="{{ $user->id }}" title="Delete user">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
 
-                                                @else
-                                                    <button class="btn btn-warning"  disabled title="Can't edit primary user">
+                                                {{-- Check if current user is Super Admin --}}
+                                                @if (Auth::user()->role_id != 1)
+                                                    {{-- No permission to edit/delete --}}
+                                                    <button class="btn btn-warning" disabled title="You don't have permission to edit">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
-                                                    <button class="btn btn-danger delete-user" data-id="{{ $user->id }}"  disabled title="Can't delete primary user">
+                                                    <button class="btn btn-danger" disabled title="You don't have permission to delete">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
+                                                @else
+                                                    {{-- Super Admin privileges --}}
+                                                    @if ($user->id != 1)
+                                                        {{-- Edit Button --}}
+                                                        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning" title="Edit User">
+                                                            <i class="far fa-edit"></i>
+                                                        </a>
+
+                                                        {{-- Delete Button (prevent self-deletion) --}}
+                                                        @if (Auth::user()->id != $user->id)
+                                                            <button class="btn btn-danger delete-user" data-id="{{ $user->id }}" title="Delete User">
+                                                                <i class="fas fa-trash-alt"></i>
+                                                            </button>
+                                                        @else
+                                                            <button class="btn btn-danger" disabled title="You can't delete yourself">
+                                                                <i class="fas fa-trash-alt"></i>
+                                                            </button>
+                                                        @endif
+                                                    @else
+                                                        {{-- Primary User: Protect from edit/delete --}}
+                                                        <button class="btn btn-warning" disabled title="Primary user can't be edited">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-danger" disabled title="Primary user can't be deleted">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    @endif
                                                 @endif
                                             </td>
                                         </tr>
@@ -171,6 +194,8 @@
                 url: `/users/${userId}`,
                 type: 'GET',
                 success: function (response) {
+                    console.log(response);
+                    
                     if (response.success) {
                         // Populate modal with user data
                         $('#user-name').text(response.data.name);
@@ -214,4 +239,64 @@
             });
         });
     </script>
+    
+    <script>
+        $(document).on('click', '.delete-user', function () {
+            let userId = $(this).data('id');
+            const row = $(this).closest('tr');
+            $('tr').removeClass('row-selected');
+            row.addClass('row-selected');
+
+            @if (Auth::user()->role_id != 1)
+                swal({   
+                    title: "Not Allowed",   
+                    text: "You don't have permission to delete user",   
+                    type: "warning",   
+                    showCancelButton: false,   
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Understood",   
+                    closeOnConfirm: true
+                }, function(){   
+                    $('tr').removeClass('row-selected');
+                });
+            @else
+                swal({   
+                    title: "Are you sure?",   
+                    text: "You will not be able to recover this user!",   
+                    type: "warning",   
+                    showCancelButton: true,   
+                    confirmButtonColor: "#DD6B55",
+                    cancelButtonColor: '#a5dc86',
+                    confirmButtonText: "Yes, delete it!",   
+                    cancelButtonText: "No, cancel!",   
+                    closeOnConfirm: false,   
+                    closeOnCancel: true 
+                }, function(isConfirm){   
+                    if (isConfirm) {     
+                        $.ajax({
+                            url: `/users/${userId}`,
+                            type: 'DELETE',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function (response) {
+                                if (response.success) {
+                                    swal('Deleted!', response.message, 'success');
+                                    $(`button[data-id="${userId}"]`).closest('tr').remove();
+                                } else {
+                                    swal('Error!', response.message, 'error');
+                                }
+                            },
+                            error: function () {
+                                swal('Error!', 'Something went wrong.', 'error');
+                            }
+                        });
+                    } else {     
+                        $('tr').removeClass('row-selected');   
+                    } 
+                });
+            @endif
+        });
+    </script>
+ 
 @endsection

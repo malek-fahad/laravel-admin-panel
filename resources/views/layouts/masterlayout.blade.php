@@ -185,17 +185,13 @@
                                     <li><a href="index.html#"><i class="ti-settings"></i> Account Setting</a></li>
                                     <li role="separator" class="divider"></li>
                                     <li>
-                                        <form method="POST" action="{{ route('logout') }}">
+                                        <form id="call-logout" method="POST" action="{{ route('logout') }}">
                                             @csrf
-
-                                            <a href="{{route('logout')}}"
-                                                onclick="event.preventDefault();
-                                                this.closest('form').submit();"
-                                            >
-                                                <i class="fa fa-power-off"></i>
-                                                {{ __('Log Out') }}
-                                            </a>
                                         </form>
+                                        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('call-logout').submit();">
+                                            <i class="fa fa-power-off"></i>
+                                            {{ __('Log Out') }}
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
@@ -216,22 +212,16 @@
                         <div class="notify setpos"> <span class="heartbit"></span> <span class="point"></span> </div>
                     </div>
                     <!-- User profile text-->
-                    <div class="profile-text">
-                        <h5>{{Auth::user()->name}}</h5>
-                    </div>
-                    <div class="profile-text d-flex justify-content-center" style="gap: 10px;">
-                        <a href="index.html#" class="dropdown-toggle u-dropdown" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true"><i class="mdi mdi-settings"></i></a>
-                        <a href="app-email.html" class="" data-toggle="tooltip" title="Email"><i class="mdi mdi-gmail"></i></a>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
 
-                            <a data-toggle="tooltip" title="Logout" href="{{route('logout')}}"
-                                onclick="event.preventDefault();
-                                this.closest('form').submit();"
-                            >
-                                <i class="mdi mdi-power"></i>
-                            </a>
-                        </form>
+                    <div class="profile-text">
+                        <h5 class="mb-0">{{Auth::user()->name}}</h5>
+                        <small class="d-block mb-2">{{Auth::user()->role->name}} of AdminPress</small>
+                        <a href="/" class="dropdown-toggle u-dropdown" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true"><i class="mdi mdi-settings"></i></a>
+                        <a href="#" class="" data-toggle="tooltip" title="Email"><i class="mdi mdi-gmail"></i></a>
+                        
+
+                        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('call-logout').submit();" data-toggle="tooltip" title="Logout"><i class="mdi mdi-power"></i></a>
+
                         <div class="dropdown-menu animated flipInY">
                             <!-- text-->
                             <a href="index.html#" class="dropdown-item"><i class="ti-user"></i> My Profile</a>
@@ -246,17 +236,7 @@
                             <!-- text-->
                             <div class="dropdown-divider"></div>
                             <!-- text-->
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-
-                                <a class="dropdown-item" href="{{route('logout')}}"
-                                    onclick="event.preventDefault();
-                                    this.closest('form').submit();"
-                                >
-                                    <i class="fa fa-power-off"></i>
-                                    {{ __('Log Out') }}
-                                </a>
-                            </form>
+                            <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('call-logout').submit();"><i class="fa fa-power-off"></i> {{ __('Log Out') }}</a>
                         </div>
                     </div>
                 </div>
@@ -425,7 +405,21 @@
             });
         </script>
     @endif
-    
+
+    @if(session('error'))
+        <script>
+            $.toast({
+                heading: 'Error',
+                text: @json(session('error')),
+                position: 'top-right',
+                loaderBg: '#c0322f',
+                icon: 'error',
+                hideAfter: 3000,
+                stack: 6
+            });
+        </script>
+    @endif
+
     @if($errors->any())
         <script>
             @foreach ($errors->all() as $error)
@@ -441,6 +435,7 @@
             @endforeach
         </script>
     @endif
+
 
     @yield('footerJs','')
 

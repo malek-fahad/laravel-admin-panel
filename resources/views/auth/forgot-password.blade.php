@@ -40,7 +40,7 @@
                         </div>
                         <div class="form-group ">
                             <div class="col-xs-12">
-                                <input id="email" class="form-control" type="email" name="email" value="old('email')" required autofocus placeholder="Email">
+                                <input id="email" class="form-control" type="email" name="email" value="{{old('email')}}" required autofocus placeholder="Email">
                                 @error('email')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
