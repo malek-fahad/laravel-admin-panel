@@ -1,9 +1,9 @@
 <h4 class="card-title">{{ __('Profile Information') }}</h4>
 <h6 class="card-subtitle">{{ __("Update your account's profile information and email address.") }}</h6>
 
-<form id="send-verification" method="post" action="{{ route('verification.send') }}">
+{{-- <form id="send-verification" method="post" action="{{ route('verification.send') }}">
     @csrf
-</form>
+</form> --}}
 
 <form method="post" action="{{ route('profile.update') }}" class="m-t-40 space-y-6">
     @csrf
@@ -11,7 +11,7 @@
 
     <div class="row">
         <div class="col-12">
-            @if (is_null(Auth::user()->email_verified_at))
+            {{-- @if (is_null(Auth::user()->email_verified_at))
                 <div>
                     <p class="text-sm mb-2 text-gray-800 dark:text-gray-200"> {{ __('Your email address is unverified.') }} <i style="height: 20px;width: 20px;display: inline-block;text-align: center;line-height: 20px;border-radius: 50%;font-size: 12px;" class="mdi mdi-close bg-danger text-white"></i></p>
                     <button form="send-verification" class="btn btn-info"> {{ __('re-send email') }}</button>
@@ -25,9 +25,9 @@
                 <div>
                     <p class="text-sm mb-2 text-gray-800 dark:text-gray-200"> {{ __('Your email address is verified.') }} <i style="height: 20px;width: 20px;display: inline-block;text-align: center;line-height: 20px;border-radius: 50%;font-size: 12px;" class="mdi mdi-check bg-success text-white"></i></p>
                 </div>
-            @endif
-            <div class="form-group m-t-30">
-                <label for="exampleInputuname2">{{__('Name')}}</label>
+            @endif --}}
+            <div class="form-group">
+                <label for="name">{{__('Name')}}</label>
                 <div class="controls">
                     <input id="name" name="name" type="text" class="form-control" value="{{old('name', $user->name)}}" required autofocus autocomplete="name" placeholder="Name">
                     @if ($errors->has('name'))
@@ -74,10 +74,10 @@
                 @endif
             </div>
             <div class="form-group">
-                <label for="exampleInputuname2">{{__('Role')}}</label>
+                <label for="role">{{__('Role')}}</label>
                 <div class="controls">
                     <div class="input-group">
-                        <input id="email" type="email" disabled  class="form-control" value="{{old('role', $user->role->name)}}" required autofocus autocomplete="username" placeholder="Email">
+                        <input id="role" type="text" disabled  class="form-control" value="{{old('role', $user->role->name)}}" required autofocus autocomplete="username" placeholder="Email">
                     </div>
                 </div>
             </div>

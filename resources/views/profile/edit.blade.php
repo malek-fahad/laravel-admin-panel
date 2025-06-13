@@ -8,6 +8,13 @@
 
 @section('content')
     <div class="row">
+        <div class="col-md-12">
+            <div class="card" style="flex: 1 1 auto;">
+                <div class="card-body">
+                    @include('profile.partials.profile-status')
+                </div>
+            </div>
+        </div>
         <!-- Column -->
         <div class="col-lg-6 d-flex flex-column">
             <div class="card" style="flex: 1 1 auto;">

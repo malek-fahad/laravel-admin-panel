@@ -52,4 +52,43 @@ class UserController extends Controller
 
         return redirect()->route('users.all')->with('success', 'User created successfully.');
     }
+
+    public function show($id) {
+        $user = User::with('role')->find($id);
+
+        if ($user) {
+            return response()->json([
+                'success' => true,
+                'data' => $user,
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'user not found.',
+            ], 404);
+        }
+    }
+
+    public function edit(Request $request, $id): View {
+
+        $user = User::with('role')->findOrFail($id);
+        $roles = Role::all();
+
+        return view('users.update', compact(['user','roles']));
+    }
+
+    public function update(Request $request, User $user): RedirectResponse {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'role_id' => 'required|exists:roles,id',
+        ]);
+
+        $user->name = $request->name;
+        $user->role_id = $request->role_id;
+        $user->save();
+
+        return redirect()->route('users.all')->with('success', 'User updated successfully.');
+    }
+    
+
 }

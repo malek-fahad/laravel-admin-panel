@@ -31,6 +31,9 @@
         .sidebar-nav>ul>li>a.active {
             background: #dde8ff54;
         }
+        .row-selected {
+            background-color: #1976d240 !important;
+        }
     </style>
 </head>
 
@@ -161,12 +164,14 @@
                             <div class="dropdown-menu dropdown-menu-right scale-up"> <a class="dropdown-item" href="index.html#"><i class="flag-icon flag-icon-us"></i> USA</a> <a class="dropdown-item" href="index.html#"><i class="flag-icon flag-icon-fr"></i> French</a> <a class="dropdown-item" href="index.html#"><i class="flag-icon flag-icon-cn"></i> China</a> <a class="dropdown-item" href="index.html#"><i class="flag-icon flag-icon-de"></i> Dutch</a> </div>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="{{asset('assets/images/users/1.jpg')}}" alt="user" class="profile-pic" /></a>
+                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : asset('assets/images/basic/no_profile_picture.png') }}" alt="user" class="profile-pic" /></a>
                             <div class="dropdown-menu dropdown-menu-right scale-up">
                                 <ul class="dropdown-user">
                                     <li>
                                         <div class="dw-user-box">
-                                            <div class="u-img"><img src="{{asset('assets/images/users/1.jpg')}}" alt="user"></div>
+                                            <div class="u-img">
+                                                <img src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : asset('assets/images/basic/no_profile_picture.png') }}"  alt="user">
+                                            </div>
                                             <div class="u-text">
                                                 <h4>{{Auth::user()->name}}</h4>
                                                 <p class="text-muted">{{Auth::user()->email}}</p><a href="{{route('profile.edit')}}" class="btn btn-rounded btn-danger btn-sm">View Profile</a></div>
@@ -206,7 +211,7 @@
                 <!-- User profile -->
                 <div class="user-profile">
                     <!-- User profile image -->
-                    <div class="profile-img"> <img src="{{asset('assets/images/users/profile.png')}}" alt="user" />
+                    <div class="profile-img"> <img src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : asset('assets/images/basic/no_profile_picture.png') }}" alt="user" />
                         <!-- this is blinking heartbit-->
                         <div class="notify setpos"> <span class="heartbit"></span> <span class="point"></span> </div>
                     </div>
@@ -383,7 +388,7 @@
                     </div>
                 </div>
             </div>
-            <footer class="footer"> © <span id="footerCurrentYear"></span> All rights reserved by MalekBD.com </footer>
+            <footer class="footer"> © <span id="footerCurrentYear"></span> All rights reserved by <a href="https://malekbd.com/" target="_blank">MalekBD.com</a></footer>
         </div>
     </div>
     <script src="{{asset('assets/plugins/jquery/jquery.min.js')}}"></script>

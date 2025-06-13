@@ -72,18 +72,22 @@
                                             <td class="text-center" title="{{ $user->created_at->format('F j, Y g:i A') }}">{{ $user->created_at->format('F j, Y') }}</td>
 
                                             <td class="text-nowrap text-center py-0" style="line-height: 48px;">
-                                                <button class="btn btn-info view-service" title="View user">
+                                                <button class="btn btn-info view-user" data-id="{{ $user->id }}" title="View user">
                                                     <i class="far fa-eye"></i>
                                                 </button>
-                                                <a href="#" title="Edit user" class="btn btn-warning">
-                                                    <i class="far fa-edit"></i>
-                                                </a>
                                                 @if ($user->id!=1)
-                                                    <button class="btn btn-danger delete-service" data-id="" title="Delete user">
+                                                    <a href="{{ route('users.edit', $user->id) }}" title="Edit user" class="btn btn-warning">
+                                                        <i class="far fa-edit"></i>
+                                                    </a>
+                                                    <button class="btn btn-danger delete-user" data-id="{{ $user->id }}" title="Delete user">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
+
                                                 @else
-                                                    <button class="btn btn-danger delete-service"  disabled title="Can't delete primary user">
+                                                    <button class="btn btn-warning"  disabled title="Can't edit primary user">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-danger delete-user" data-id="{{ $user->id }}"  disabled title="Can't delete primary user">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
                                                 @endif
@@ -101,5 +105,113 @@
 @endsection
 
 @section('footerJs')
-   
+   <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="userModalLabel">User Details</h3>
+                    <button type="button" class="btn btn-danger view-user-close">x</button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td><strong>Name</strong></td>
+                                    <td class="text-center">:</td>
+                                    <td><span id="user-name"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Email</strong></td>
+                                    <td class="text-center">:</td>
+                                    <td><span id="user-email"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Verified Status</strong></td>
+                                    <td class="text-center">:</td>
+                                    <td><span id="user-status"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>User Role</strong></td>
+                                    <td class="text-center">:</td>
+                                    <td><span id="user-role"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Image</strong></td>
+                                    <td class="text-center">:</td>
+                                    <td><img id="user-image" src="" alt="user Image" style="width: 100px;"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $('.view-user-close').on('click', function () {
+            $('#userModal').modal('hide');
+            $('tr').removeClass('row-selected');
+        });
+        $('.view-user').on('click', function () {
+            const userId = $(this).data('id');
+
+            const row = $(this).closest('tr');
+
+
+            $('tr').removeClass('row-selected');
+
+            row.addClass('row-selected');
+
+            $('#user-title').text(userId);
+
+            // Send AJAX request
+            $.ajax({
+                url: `/users/${userId}`,
+                type: 'GET',
+                success: function (response) {
+                    if (response.success) {
+                        // Populate modal with user data
+                        $('#user-name').text(response.data.name);
+                        $('#user-email').text(response.data.email);
+                        $('#user-status').html(response.data.email_verified_at!= null ? 'Verified <i class="fas fa-check-circle text-success ms-2" title="Verified"></i>' : 'Not Verified <i class="fas fa-times-circle text-danger ms-2" title="Not Verified"></i>');
+                        let labelClass = 'label-info';
+                        if (response.data.role_id == 1) {
+                            labelClass = 'label-success';
+                        } else if (response.data.role?.name_id == 1) {
+                            labelClass = 'label-primary';
+                        }
+                        $('#user-role').html(`<span class="label ${labelClass}"> ${response.data.role.name}</span>`);
+
+                        $('#user-image').attr('src', response.data.profile_picture ? `/storage/${response.data.profile_picture}` : '{{ asset("assets/images/basic/no_profile_picture.png") }}');
+
+                        // Show the modal
+                        $('#userModal').modal('show');
+                    } else {
+                        $.toast({
+                            heading: 'Something is wrong',
+                            text: 'user not found.',
+                            position: 'top-right',
+                            loaderBg: '#ff6849',
+                            icon: 'error',
+                            hideAfter: 3000, 
+                            stack: 6
+                        });
+                    }
+                },
+                error: function () {
+                    $.toast({
+                        heading: 'Something is wrong',
+                        text: 'An error occurred while fetching the client details.',
+                        position: 'top-right',
+                        loaderBg: '#ff6849',
+                        icon: 'error',
+                        hideAfter: 3000, 
+                        stack: 6
+                    });
+                },
+            });
+        });
+    </script>
 @endsection

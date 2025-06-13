@@ -27,7 +27,16 @@ Route::middleware('auth')->group(function () {
      Route::prefix('users')->name('users.')->group(function () {
         Route::get('/', [UserController::class, 'view'])->name('all');
         Route::get('/add', [UserController::class, 'add'])->name('add');
+        
         Route::post('/store', [UserController::class, 'store'])->name('store');
+        Route::get('/{id}', [UserController::class, 'show'])->name('show');
+
+        Route::get('/{id}/update', [UserController::class, 'edit'])->name('edit');
+
+        Route::patch('/{user}', [UserController::class, 'update'])->name('update');
+
+
+
 
     });
 });
